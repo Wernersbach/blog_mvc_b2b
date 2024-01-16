@@ -1,4 +1,3 @@
-<?php echo "Handersen"; ?>
 <!DOCTYPE html>
 <html>
 <head>

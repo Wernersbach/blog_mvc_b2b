@@ -2,33 +2,54 @@
 
 namespace core;
 
+use Exception;
+
 class Router
 {
+
     /**
-     * @throws \Exception
+     * @var array|array[]
+     */
+    private array $routes;
+
+    public function __construct()
+    {
+        $this->routes = [
+            'home' => ['controller' => 'Home', 'action' => 'index'],
+            'post' => ['controller' => 'Post', 'action' => 'index'],
+            'admin' => ['controller' => 'Admin', 'action' => 'index']
+        ];
+    }
+
+    /**
+     * @param $url
+     * @return void
+     * @throws Exception
      */
     public function route($url): void
     {
         $url = explode('/', $url);
-        $moduleName = ucfirst($url[0]); // Certifique-se de que está em PascalCase
-        $controllerName = ucfirst($url[1]); // Deve ser PascalCase também
-        $actionName = $url[2]; // Os nomes de métodos são case-sensitive, então mantenha como está na definição do método
+        $route = $url[0];
 
-        // Ajuste o namespace para corresponder à sua estrutura de diretórios e padrão PSR-4
-        $controllerClass = "modules\\$moduleName\\controllers\\${controllerName}Controller";
+        if (array_key_exists($route, $this->routes)) {
+            $controllerName = $this->routes[$route]['controller'];
+            $actionName = $this->routes[$route]['action'];
+        } else {
+            // Rota padrão ou página 404
+            $controllerName = 'Home';
+            $actionName = 'index';
+        }
 
-        // Certifique-se de que a classe existe antes de tentar instanciá-la
+        $controllerClass = "modules\\$controllerName\\controllers\\{$controllerName}Controller";
+
         if (class_exists($controllerClass)) {
             $controller = new $controllerClass();
-            // Verifique se o método (ação) existe antes de chamá-lo
             if (method_exists($controller, $actionName)) {
                 $controller->$actionName();
             } else {
-                // Tratar o erro de método não encontrado
-                throw new \Exception("Method $actionName not found in $controllerClass");
+                throw new \Exception("Action $actionName not found in $controllerClass");
             }
         } else {
-            // Tratar o erro de classe não encontrada
             throw new \Exception("Controller class $controllerClass not found");
         }
     }
