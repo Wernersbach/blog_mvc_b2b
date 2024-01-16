@@ -1,1 +1,0 @@
-# blog_mvc_b2b
