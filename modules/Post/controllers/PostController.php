@@ -13,4 +13,11 @@ class PostController extends Controller
         $posts = $postModel->getPosts();
         $this->view('Post/index', ['posts' => $posts]);
     }
+
+    public function createPost(): void
+    {
+        if (!$this->auth->can('create_post')) {
+            die('Você não tem permissão para criar posts.');
+        }
+    }
 }

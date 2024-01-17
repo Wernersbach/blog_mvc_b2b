@@ -4,5 +4,8 @@
       "core\\": "core/",
       "modules\\": "modules/"
     }
+  },
+  "require": {
+    "ext-pdo": "*"
   }
 }

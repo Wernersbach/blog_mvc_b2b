@@ -1,9 +1,19 @@
 <?php
-
 namespace core;
+
+use JetBrains\PhpStorm\NoReturn;
+use PDO;
 
 class Controller
 {
+    protected Auth $auth;
+    private PDO $db;
+
+    public function __construct() {
+        $this->db = Database::getConnection();
+        $this->auth = new Auth($this->db);
+    }
+
     /**
      * Método para instanciar um modelo
      *
@@ -31,7 +41,7 @@ class Controller
         $viewPath = implode('/', array_slice($viewParts, 1));
 
         // Construa o caminho absoluto para a view
-        $filePath = __DIR__ . "/../modules/{$moduleName}/views/{$viewPath}.php";
+        $filePath = "modules/{$moduleName}/views/{$viewPath}.php";
 
         // Verifique se o arquivo da view existe
         if (file_exists($filePath)) {
@@ -44,6 +54,18 @@ class Controller
             // Trate o erro de arquivo não encontrado
             die("View não existe: {$filePath}");
         }
+    }
+
+    public function login($username, $password): bool
+    {
+        return $this->auth->login($username, $password);
+    }
+
+    public function logout(): void
+    {
+        $this->auth->logout();
+        header('Location: /login');
+        exit;
     }
 
 }
