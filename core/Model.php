@@ -2,13 +2,10 @@
 
 namespace core;
 
-class Model
-{
-    protected $db;
+abstract class Model {
+    protected \PDO $db;
 
-    public function __construct()
-    {
-        //configuração do banco talvez, preciso analisar a segurança disso.
+    public function __construct() {
+        $this->db = Database::getConnection();
     }
-
 }
