@@ -20,7 +20,7 @@ class Router
         $this->auth = new Auth($this->db);
         $this->routes = [
             'home' => ['controller' => 'Home', 'action' => 'index'],
-            'post' => ['controller' => 'Post', 'action' => 'index'],
+            'post' => ['controller' => 'Post', 'action' => 'index', 'auth' => true],
             'admin' => ['controller' => 'Admin', 'action' => 'index', 'auth' => true], // Requer autenticação
             'login' => ['controller' => 'User', 'action' => 'showLoginForm'],
             'login_post' => ['controller' => 'User', 'action' => 'doLogin', 'method' => 'POST'],
@@ -51,9 +51,14 @@ class Router
                 exit;
             }
 
+            if ($route === 'admin' && !$this->auth->isAdmin()) {
+                header('Location: /post'); // Redireciona usuários não-admin para a página de post
+                exit;
+            }
+
             // Verifique se o método HTTP corresponde, se especificado
             if (!empty($this->routes[$route]['method']) && $_SERVER['REQUEST_METHOD'] !== $this->routes[$route]['method']) {
-                throw new Exception("Incorrect method for route $route");
+                throw new Exception("Metodo de rota incorreto $route");
             }
 
             $controllerClass = "modules\\$controllerName\\controllers\\{$controllerName}Controller";

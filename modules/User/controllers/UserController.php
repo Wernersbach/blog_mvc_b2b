@@ -6,11 +6,17 @@ use core\Controller;
 
 class UserController extends Controller
 {
+    /**
+     * @return void
+     */
     public function showLoginForm(): void
     {
         $this->view('User/index');
     }
 
+    /**
+     * @return void
+     */
     public function doLogin(): void
     {
         $username = $_POST['username'] ?? null;
@@ -52,6 +58,9 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * @return void
+     */
     public function doLogout(): void
     {
         $this->logout();

@@ -35,6 +35,14 @@ class Auth
         return isset($_SESSION['user_id']);
     }
 
+    public function isAdmin(): bool {
+        $user = $this->user();
+        if ($user) {
+            return $user['role_id'] == 2;
+        }
+        return false;
+    }
+
     public function can($permissionName): bool
     {
         $user = $this->user();
